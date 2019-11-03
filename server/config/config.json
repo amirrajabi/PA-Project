@@ -1,10 +1,10 @@
-{
-    "development": {
-        "PORT": 3030,
-        "MONGOURI": "mongodb://localhost:27017/PA_DB"
-    },
-    "test": {
-        "PORT": 3030,
-        "MONGOURI": "mongodb://localhost:27017/PA_DB_TEST"
-    }
-}
+// {
+//     "development": {
+//         "PORT": 3030,
+//         "MONGOURI": "mongodb://localhost:27017/PA_DB"
+//     },
+//     "test": {
+//         "PORT": 3030,
+//         "MONGOURI": "mongodb://localhost:27017/PA_DB_TEST"
+//     }
+// }

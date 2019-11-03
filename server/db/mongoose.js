@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
+const config = require('config');
 
 mongoose.Promise = global.Promise;
-mongoose.connect('', { useNewUrlParser: true });
+mongoose.connect(config.get('MONGOURI'), { useNewUrlParser: true });
 
 module.exports = {
     mongoose
