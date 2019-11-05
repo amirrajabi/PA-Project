@@ -4,6 +4,11 @@ process.env.NODE_CONFIG_DIR = __dirname + '/config';
 const mongoose = require('mongoose');
 const config = require('config');
 const express = require('express');
+const morgan = require('morgan');
+const helmet = require('helmet');
+const winston = require('winston');
+const fs = require('fs');
+const path = require('path');
 const _ = require('lodash');
 
 const { User } = require('./model/user');
@@ -11,7 +16,17 @@ const { User } = require('./model/user');
 console.log(`*** ${String(config.get('Level')).toUpperCase()} ***`);
 
 const app = express();
+const requestLogger = fs.createWriteStream(path.join(__dirname, 'log/requests.log'));
+const logger = winston.createLogger({
+    transports: [
+        new winston.transports.Console(),
+        new winston.transports.File({ filename: path.join(__dirname, 'log/server-status.log') })
+    ]
+})
+
 app.use(express.json());
+app.use(helmet());
+app.use(morgan('combined', {stream: requestLogger}));
 
 mongoose.set('useCreateIndex', true);
 
@@ -51,5 +66,10 @@ app.post('/api/login', async (req, res) => {
 });
 
 app.listen(config.get('PORT'), () => {
-    console.log(`Server is running on port ${config.get('PORT')}`);
+    // console.log(`Server is running on port ${config.get('PORT')}`);
+    // logger.log({
+    //     level: 'info',
+    //     message: `Server running on port ${config.get('PORT')}`
+    // })
+    logger.info(`Server running on port ${config.get('PORT')}`);
 });
