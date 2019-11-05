@@ -12,6 +12,7 @@ const path = require('path');
 const _ = require('lodash');
 
 const { User } = require('./model/user');
+const { authenticate } = require('./middleware/authenticate');
 
 console.log(`*** ${String(config.get('Level')).toUpperCase()} ***`);
 
@@ -62,6 +63,36 @@ app.post('/api/login', async (req, res) => {
         res.status(400).json({
             Error: `Something went wrong. ${e}`
         });
+    }
+});
+
+app.post('/api/payment', authenticate, async (req, res) => {
+    try {
+        const body = _.pick(req.body, ['info', 'amount']);
+        let user = await User.findOneAndUpdate({
+            _id: req.user._id
+        }, {
+            $push: {
+                payment: {
+                    info: body.info,
+                    amount: body.amount,
+                    date: new Date().getFullYear()
+                }
+            }
+        });
+        if (!user) {
+            return res.status(404).json({
+                Error: 'User not found!'
+            })
+        }
+
+        res.status(200).json({
+            Message: 'Payment has been saved.'
+        })
+    } catch (e) {
+        res.status(400).json({
+            Error:  `Something went wrong ${e}`
+        })
     }
 });
 

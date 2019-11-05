@@ -34,9 +34,25 @@ let UserSchema = new mongoose.Schema({
         minlength: 6,
         required: true
     },
-    tokens:[{
+    tokens: [{
+        _id: false,
         access: tokenOptions,
         token: tokenOptions
+    }],
+    payment: [{
+        info: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        amount: {
+            type: Number,
+            required: true
+        },
+        date: {
+            type: String,
+            required: true
+        }
     }]
 });
 
@@ -67,6 +83,23 @@ UserSchema.statics.findByCredentials = function (email, password) {
             });
         });
     });
+}
+
+UserSchema.statics.findByToken = function (token) {
+    let User = this;
+    let decoded;
+
+    try {
+        decoded = jwt.verify(token, config.get('JWT_SECRET'))
+    } catch(e) {
+        return Promise.reject();
+    }
+
+    return User.findOne({
+        _id: decoded.id,
+        'tokens.token': token,
+        'tokens.access': 'auth'
+    })
 }
 
 UserSchema.methods.generateAuthToken = function () {
