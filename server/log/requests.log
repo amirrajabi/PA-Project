@@ -1,2 +1,0 @@
-::1 - - [05/Nov/2019:21:49:25 +0000] "POST /api/users HTTP/1.1" 200 78 "-" "PostmanRuntime/7.19.0"
-::1 - - [05/Nov/2019:21:49:47 +0000] "POST /api/login HTTP/1.1" 400 43 "-" "PostmanRuntime/7.19.0"

@@ -1,5 +1,5 @@
 {
     "Level": "test",
-    "PORT": 3030,
+    "PORT": 3000,
     "MONGOURI": "mongodb://localhost:27017/PA_DB_TEST"
 }

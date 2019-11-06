@@ -34,12 +34,27 @@ let UserSchema = new mongoose.Schema({
         minlength: 6,
         required: true
     },
-    tokens: [{
+    tokens:[{
         _id: false,
         access: tokenOptions,
         token: tokenOptions
     }],
     payment: [{
+        info: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        amount: {
+            type: Number,
+            required: true
+        },
+        date: {
+            type: String,
+            required: true
+        }
+    }],
+    receive:[{
         info: {
             type: String,
             required: true,
@@ -90,16 +105,28 @@ UserSchema.statics.findByToken = function (token) {
     let decoded;
 
     try {
-        decoded = jwt.verify(token, config.get('JWT_SECRET'))
-    } catch(e) {
+        decoded = jwt.verify(token, config.get('JWT_SECRET'));
+    } catch (e) {
         return Promise.reject();
     }
 
     return User.findOne({
-        _id: decoded.id,
+        _id: decoded._id,
         'tokens.token': token,
         'tokens.access': 'auth'
-    })
+    });
+}
+
+UserSchema.methods.removeToken = function (token) {
+    let user = this;
+
+    return user.update({
+        $pull: {
+            tokens: {
+                token
+            }
+        }
+    });
 }
 
 UserSchema.methods.generateAuthToken = function () {
